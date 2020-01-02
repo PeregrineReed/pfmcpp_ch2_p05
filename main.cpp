@@ -95,6 +95,7 @@ struct Movie
   float averageRating = 3.5f;
   unsigned int lengthInMinutes = 120;
   bool isRewound = true;
+  FIXME add a member function or two
 };
 /*
  5)
@@ -155,6 +156,7 @@ struct EntertainmentCenter
   VCR vcr;
   Television tv;
   Speaker speaker;
+  FIXME add a member function or two
 };
 /*
  9)
@@ -177,7 +179,7 @@ struct Song
   unsigned int bpm = 120;
   float timeInMinutes = 7.31f;
   unsigned int releaseYear = 2018;
-  bool IsInCollection = true;
+  bool IsInCollection = true; FIXME camelCase
   
   void favorite();
 };
