@@ -177,7 +177,7 @@ struct Song
   unsigned int bpm = 120;
   float timeInMinutes = 7.31f;
   unsigned int releaseYear = 2018;
-  bool IsInCollection = true; FIXME camelCase
+  bool isInCollection = true;
   
   void favorite();
 };
