@@ -8,10 +8,52 @@
     you should be able to deduce the return type of those functions based on their usage in Person::run()
     You'll need to insert the Person struct from the video in the space below.
  */
+struct Limb
+{
+  float stepSize();
+  void stepForward();
+  unsigned int totalStepsTaken = 0;
+};
 
+float Limb::stepSize()
+{
+  return 2.5f;
+}
 
+void Limb::stepForward()
+{
+  totalStepsTaken += 1;
+}
 
+struct Person
+{
+  Limb leftFoot;
+  Limb rightFoot;
 
+  int age;
+  int height;
+  float hairLength;
+  float GPA;
+  unsigned int SATScore;
+  float distanceTraveled = 0;
+
+  void run(int, bool);
+};
+
+void Person::run(int howNotSlow, bool startWithLeftFoot)
+{
+  if (startWithLeftFoot == true )
+  {
+    leftFoot.stepForward();
+    rightFoot.stepForward();
+  }
+  else
+  {
+    rightFoot.stepForward();
+    leftFoot.stepForward();
+  }
+  distanceTraveled += leftFoot.stepSize() + rightFoot.stepSize();
+}
 
  /*
  2) provide implementations for the member functions you declared in your 10 user-defined types from the previous video outside of your UDT definitions.
@@ -43,8 +85,14 @@ struct Book
   bool hardcover = true;
   float rating = 4.5f;
 
-  void writeInBook(Paper page, unsigned int pagesWritten = 1);
+  void writeInBook(Paper, unsigned int);
 };
+
+void Book::writeInBook(Paper page, unsigned int pagesWritten = 1)
+{
+  page.hasWriting = true;
+  numberOfPages += pagesWritten;
+}
 /*
  3)
  */
@@ -66,8 +114,26 @@ struct Library
 
   Librarian employee;
   void checkOutBook(Book book);
-  void buyLibraryCard();
+  bool buyLibraryCard();
 };
+
+void Library::checkOutBook(Book book)
+{
+  numberOfBooksAvailable -= 1;
+  numberOfBooksCheckedOut += 1;
+}
+
+bool Library::buyLibraryCard()
+{
+  if (isOpen)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 /*
  4)
  */
@@ -83,22 +149,82 @@ struct Movie
 struct VCR
 {
   bool isTurnedOn = false;
+  bool isPlaying = false;
   bool hasMovie = false;
+  Movie currentMovie;
 
   void pressPowerButton();
-  void insertMovie(Movie movie);
+  void changeMovie(Movie);
   void play();
   void pause();
   void stop();
   void rewind();
   void fastForward();
-  void eject();
 };
+
+void VCR::pressPowerButton()
+{
+  if (isTurnedOn == true)
+  {
+    isTurnedOn = false;
+  }
+  else
+  {
+    isTurnedOn = true;
+  }
+}
+
+void VCR::changeMovie(Movie movie)
+{
+  currentMovie = movie;
+}
+
+void VCR::play()
+{
+  isPlaying = true;
+  if (currentMovie.isRewound)
+  {
+    currentMovie.isRewound = false;
+  }
+}
+
+void VCR::pause()
+{
+  isPlaying = false;
+}
+
+void VCR::stop()
+{
+  pause();
+}
+
+void VCR::rewind()
+{
+  if (isPlaying)
+  {
+    isPlaying = false;
+  }
+  currentMovie.isRewound = true;
+}
+
+void VCR::fastForward()
+{
+  if (isPlaying)
+  {
+    isPlaying = false;
+    if (currentMovie.isRewound)
+    {
+     currentMovie.isRewound = false;
+    }
+  }
+}
 /*
  6)
  */
 struct Television
 {
+  bool isOn = false;
+  unsigned int currentChannel = 3;
   float screenSizeInInches = 22.5;
   unsigned int volume = 14;
 
@@ -106,28 +232,89 @@ struct Television
   {
     bool hasBatteries = true;
     
-    void pressPowerButton();
-    void changeChannel(unsigned int channel);
-    void changeVolume(int amount);
+    void pressPowerButton(Television);
+    void changeChannel(Television, unsigned int);
+    void changeVolume(Television, int);
   };
 
   RemoteControl remote;
 
   void pressPowerButton();
-  void changeChannel(unsigned int channel);
-  void changeVolume(int amount);
+  void changeChannel(unsigned int);
+  void changeVolume(int);
 };
+
+void Television::pressPowerButton()
+{
+  if (isOn)
+  {
+    isOn = false;
+  }
+  else
+  {
+    isOn = true;
+  }
+}
+
+void Television::changeChannel(unsigned int channel)
+{
+  currentChannel = channel;
+}
+
+void Television::changeVolume(int amount)
+{
+  if (volume + amount <= 0)
+  {
+    volume = 0;
+  }
+  else if (volume + amount >= 100)
+  {
+    volume = 100;
+  }
+  else
+  {
+    volume += amount;
+  }
+}
+
+void Television::RemoteControl::pressPowerButton(Television tv)
+{
+  tv.pressPowerButton();
+}
+
+void Television::RemoteControl::changeChannel(Television tv,unsigned int channel)
+{
+  tv.changeChannel(channel);
+}
+
+void Television::RemoteControl::changeVolume(Television tv, int amount)
+{
+  tv.changeVolume(amount);
+}
 /*
  7)
  */
 struct Speaker
 {
+  bool isOn = false;
   unsigned int dB = 90;
   unsigned int frequencyRangeLowHz = 20;
   unsigned int frequenctRangeHighKhz = 20;
 
   void pressPowerButton();
 };
+
+void Speaker::pressPowerButton()
+{
+  if (isOn)
+  {
+    isOn = false;
+  }
+  else
+  {
+    isOn = true;
+  }
+}
 /*
  8)
  */
@@ -136,20 +323,73 @@ struct EntertainmentCenter
   VCR vcr;
   Television tv;
   Speaker speaker;
+
+  void pressPowerButton();
 };
+
+void EntertainmentCenter::pressPowerButton()
+{
+  vcr.pressPowerButton();
+  tv.pressPowerButton();
+  speaker.pressPowerButton();
+}
 /*
  9)
  */
 struct TimeMachine
 {
   int currentYear = 2020;
+  int startYear = currentYear;
   double quantumLeakagePercentage = 0.0;
   bool paradoxThresholdCrossed = false;
   int estimatedOffsetInYears = 0;
   
-  bool travelInTime(int year);
+  bool travelInTime(int);
   bool returnToCurrentYear();
 };
+
+bool TimeMachine::travelInTime(int year)
+{
+  if (currentYear > year)
+  {
+    estimatedOffsetInYears += currentYear - year;
+  }
+  else
+  {
+    estimatedOffsetInYears += year - currentYear;
+  }
+  quantumLeakagePercentage += estimatedOffsetInYears / 101;
+
+  if (currentYear + quantumLeakagePercentage > currentYear + 42)
+  {
+    paradoxThresholdCrossed = true;
+  }
+
+  if (paradoxThresholdCrossed)
+  {
+    currentYear = year + quantumLeakagePercentage;
+    return false;
+  }
+  else
+  {
+    currentYear = year;
+    return true;
+  }
+}
+
+bool TimeMachine::returnToCurrentYear(){
+  if (paradoxThresholdCrossed)
+  {
+    currentYear = 1570505499;
+    startYear = 420972913;
+    return false;
+  }
+  else
+  {
+    currentYear = startYear;
+    return true;
+  }
+}
 /*
  10)
  */
@@ -158,10 +398,15 @@ struct Song
   unsigned int bpm = 120;
   float timeInMinutes = 7.31f;
   unsigned int releaseYear = 2018;
-  bool isInCollection = true;
+  bool isInCollection = false;
   
   void favorite();
 };
+
+void Song::favorite()
+{
+  isInCollection = true;
+}
 
 #include <iostream>
 int main()
