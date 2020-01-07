@@ -36,6 +36,7 @@ struct Person
   float GPA;
   unsigned int SATScore;
   float distanceTraveled = 0;
+  float timeTraveled = 0;
 
   void run(int, bool);
 };
@@ -53,6 +54,7 @@ void Person::run(int howNotSlow, bool startWithLeftFoot)
     leftFoot.stepForward();
   }
   distanceTraveled += leftFoot.stepSize() + rightFoot.stepSize();
+  timeTraveled += howNotSlow;
 }
 
  /*
@@ -84,6 +86,7 @@ struct Book
   unsigned int numberOfPages = 100;
   bool hardcover = true;
   float rating = 4.5f;
+  bool isCheckedOut = false;
 
   void writeInBook(Paper, unsigned int);
 };
@@ -119,6 +122,7 @@ struct Library
 
 void Library::checkOutBook(Book book)
 {
+  book.isCheckedOut = true;
   numberOfBooksAvailable -= 1;
   numberOfBooksCheckedOut += 1;
 }
